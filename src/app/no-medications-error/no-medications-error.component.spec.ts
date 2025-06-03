@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddMedicationsModalComponent } from './no-medications-error.component';
+import { NoMedicationsErrorComponent } from './no-medications-error.component';
 
-describe('AddMedicationsModalComponent', () => {
-  let component: AddMedicationsModalComponent;
-  let fixture: ComponentFixture<AddMedicationsModalComponent>;
+describe('NoMedicationsErrorComponent', () => {
+  let component: NoMedicationsErrorComponent;
+  let fixture: ComponentFixture<NoMedicationsErrorComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddMedicationsModalComponent ],
+      declarations: [ NoMedicationsErrorComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddMedicationsModalComponent);
+    fixture = TestBed.createComponent(NoMedicationsErrorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
