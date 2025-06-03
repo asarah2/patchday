@@ -1,0 +1,26 @@
+.custom-tab-bar {
+    height: 60px; /* Adjust tab bar height */
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .custom-tab-button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Full height of the tab bar */
+    padding: 0;
+  }
+  
+  .custom-tab-button ion-icon {
+    font-size: 24px; /* Increase icon size */
+    margin-bottom: 4px; /* Space between icon and label */
+  }
+  
+  .custom-tab-button ion-label {
+    font-size: 12px; /* Adjust label font size */
+  }
+  

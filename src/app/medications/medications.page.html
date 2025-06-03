@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Medications </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Medications</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card *ngFor="let medication of medicationData">
+    <ion-card-header>
+      <ion-card-title>{{ medication.medicationName }} - 2 mg</ion-card-title>
+      <ion-card-subtitle>
+        <ion-icon
+          [src]="getIconForType(medication.pickedMedicationType)"
+          style="width: 48px; height: 48px"
+        ></ion-icon>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      {{ medication.nextDoseTime.dateString }} at
+      {{medication.nextDoseTime.timeString}}</ion-card-content
+    >
+    <ion-button fill="clear" [strong]="true" class="custom-padding-button"
+      >Skip</ion-button
+    >
+    <ion-button
+      [strong]="true"
+      class="custom-padding-button"
+      (click)="onComplete(medication)"
+    >
+      Complete
+    </ion-button>
+  </ion-card>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <app-add-medications-modal></app-add-medications-modal>\
+  </ion-fab>
+</ion-content>

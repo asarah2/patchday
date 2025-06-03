@@ -1,0 +1,9 @@
+.custom-padding-button {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  width: 50%;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  width: calc(50% - 10px); 
+  box-sizing: border-box;
+}
