@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { MedicationService } from '../services/update-medication-data.service';
@@ -8,7 +8,7 @@ import { MedicationService } from '../services/update-medication-data.service';
   templateUrl: 'medications.page.html',
   styleUrls: ['medications.page.scss'],
 })
-export class MedicationsPage implements AfterViewInit {
+export class MedicationsPage implements AfterViewInit, OnDestroy {
   constructor(private medicationService: MedicationService) {}
 
   @ViewChild(IonModal) modal!: IonModal;
@@ -22,6 +22,7 @@ export class MedicationsPage implements AfterViewInit {
   medicationTypes: string[] = [];
   frequencyTypes: string[] = [];
   allSelectedSites: string[][] = [];
+  timer: any;
 
   ngAfterViewInit(): void {
     this.medicationService.medicationData$.subscribe((data) => {
@@ -34,12 +35,9 @@ export class MedicationsPage implements AfterViewInit {
     const storedData = localStorage.getItem('medicationData');
     this.medicationData = storedData ? JSON.parse(storedData) : [];
     this.medicationData.forEach((medication: any) => {
-      const { dateString, timeString } = this.calculateNextDoseTime(
-        medication.pickedFrequencyType,
-        medication.nextDoseTime.dateAdded
-      );
-      medication.nextDoseTime = { dateString, timeString };
+      medication.timeRemaining = this.getTimeRemaining(medication.nextDoseTime);
     });
+    this.startTimers();
   }
 
   calculateNextDoseTime(frequency: string, dateAdded: string) {
@@ -119,6 +117,61 @@ export class MedicationsPage implements AfterViewInit {
     });
 
     return dateString;
+  }
+
+  startTimers() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    this.timer = setInterval(() => {
+      this.medicationData.forEach((med: any) => {
+        med.timeRemaining = this.getTimeRemaining(med.nextDoseTime);
+      });
+    }, 1000);
+  }
+
+  getTimeRemaining(nextDose: { dateString: string; timeString: string }) {
+    const nextDoseDate = this.parseNextDoseDate(nextDose);
+    const diff = nextDoseDate.getTime() - new Date().getTime();
+    if (diff <= 0) {
+      return '00:00:00';
+    }
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    return (
+      hours.toString().padStart(2, '0') +
+      ':' +
+      minutes.toString().padStart(2, '0') +
+      ':' +
+      seconds.toString().padStart(2, '0')
+    );
+  }
+
+  parseNextDoseDate(nextDose: { dateString: string; timeString: string }) {
+    const [month, day] = nextDose.dateString.split('/').map((v) => parseInt(v, 10));
+    const now = new Date();
+    const year = now.getFullYear();
+    let [time, modifier] = nextDose.timeString.split(' ');
+    let [hourStr, minuteStr] = time.split(':');
+    let hours = parseInt(hourStr, 10);
+    const minutes = parseInt(minuteStr, 10);
+    if (modifier) {
+      modifier = modifier.toLowerCase();
+      if (modifier.includes('pm') && hours < 12) {
+        hours += 12;
+      }
+      if (modifier.includes('am') && hours === 12) {
+        hours = 0;
+      }
+    }
+    return new Date(year, month - 1, day, hours, minutes);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 
   getIconForType(type: string): string {

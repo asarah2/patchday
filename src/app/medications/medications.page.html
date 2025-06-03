@@ -22,8 +22,9 @@
     </ion-card-header>
     <ion-card-content>
       {{ medication.nextDoseTime.dateString }} at
-      {{medication.nextDoseTime.timeString}}</ion-card-content
-    >
+      {{ medication.nextDoseTime.timeString }}
+      <div>Time remaining: {{ medication.timeRemaining }}</div>
+    </ion-card-content>
     <ion-button fill="clear" [strong]="true" class="custom-padding-button"
       >Skip</ion-button
     >
